@@ -134,11 +134,13 @@ class CcpSdeSeeder extends Seeder
         // fallback to const version
         if(!$result->successful()){
             $this->command->info('Unable to get latest version, using version: '. $this->version);
+            return;
         }
         $firstLine = strtok($result->body(), "\n");
         $data = json_decode($firstLine, true);
         if(!$data['buildNumber']){
             this->command->info('Unable to get latest build version from response. using version: '. $this->version);
+            return;
         }
         
         $this->version = $data['buildNumber'];
