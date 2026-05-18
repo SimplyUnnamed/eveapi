@@ -48,7 +48,7 @@ class CcpSdeSeeder extends Seeder
     /**
      * @var string
      */
-    private const VERSION = '3118350';
+    private $version = '3118350';
 
     /**
      * The SDE file storage path.
@@ -86,8 +86,10 @@ class CcpSdeSeeder extends Seeder
         if (! $this->isStorageOk())
             throw new DirectoryNotFoundException('Storage path is not OK. Please check permissions.');
 
-        $this->command->info('Authorised Version Found as: ' . self::VERSION);
+        $this->command->info('Getting latest SDE Version');
+        $this->getLatestSdeVersion();
 
+        $this->command->info('Authorised Version Found as: ' . $this->version);
 
         $this->command->info('Downloading static files...');
         $this->downloadStaticFiles();
@@ -100,10 +102,13 @@ class CcpSdeSeeder extends Seeder
      * Download the EVE Sde from Fuzzwork and save it
      * in the storage_path/sde folder.
      */
+    /**
+     * Download the EVE Sde from Fuzzwork and save it
+     * in the storage_path/sde folder.
+     */
     private function downloadStaticFiles()
     {
-
-        $sde = sprintf('eve-online-static-data-%d-jsonl.zip', self::VERSION);
+        $sde = sprintf('eve-online-static-data-%d-jsonl.zip', $this->version);
 
         $url = sprintf('https://developers.eveonline.com/static-data/tranquility/%s', $sde);
         $destination = $this->storage_path . $sde;
@@ -120,6 +125,23 @@ class CcpSdeSeeder extends Seeder
             unlink($destination);
             $this->command->info("Deleted ZIP file: $destination");
         }
+    }
+
+    private function getLatestSdeVersion()
+    {
+        $destination = $this->storage_path.'latest.jsonl';
+        $result = Http::get('https://developers.eveonline.com/static-data/tranquility/latest.jsonl');
+        // fallback to const version
+        if(!$result->successful()){
+            $this->command->info('Unable to get latest version, using version: '. $this->version);
+        }
+        $firstLine = strtok($result->body(), "\n");
+        $data = json_decode($firstLine, true);
+        if(!$data['buildNumber']){
+            this->command->info('Unable to get latest build version from response. using version: '. $this->version);
+        }
+        
+        $this->version = $data['buildNumber'];
     }
 
     private function extractZipWithProgress(string $zipPath, string $destination): void
