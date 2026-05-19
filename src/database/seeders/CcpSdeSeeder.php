@@ -98,10 +98,7 @@ class CcpSdeSeeder extends Seeder
         $this->call($this->seeders);
     }
 
-    /**
-     * Download the EVE Sde from Fuzzwork and save it
-     * in the storage_path/sde folder.
-     */
+    
     /**
      * Download the EVE Sde from Fuzzwork and save it
      * in the storage_path/sde folder.
@@ -129,7 +126,6 @@ class CcpSdeSeeder extends Seeder
 
     private function getLatestSdeVersion()
     {
-        $destination = $this->storage_path.'latest.jsonl';
         $result = Http::get('https://developers.eveonline.com/static-data/tranquility/latest.jsonl');
         // fallback to const version
         if(!$result->successful()){
