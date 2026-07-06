@@ -80,16 +80,13 @@ class CcpSdeSeeder extends Seeder
     public function run()
     {
         // extract sde file/seeder mapping from config
-        // $sde_seeders = config('seat.sde.seeders', []);
-
+        // configure sde version
+        $this->version = config('eveapi.config.sde.version', $this->version);
         $this->command->info('Checking configuration...');
         if (! $this->isStorageOk())
             throw new DirectoryNotFoundException('Storage path is not OK. Please check permissions.');
 
-        $this->command->info('Getting latest SDE Version');
-        $this->getLatestSdeVersion();
-
-        $this->command->info('Authorised Version Found as: ' . $this->version);
+        $this->command->info('Using SDE Version: ' . $this->version);
 
         $this->command->info('Downloading static files...');
         $this->downloadStaticFiles();
@@ -122,24 +119,6 @@ class CcpSdeSeeder extends Seeder
             unlink($destination);
             $this->command->info("Deleted ZIP file: $destination");
         }
-    }
-
-    private function getLatestSdeVersion()
-    {
-        $result = Http::get('https://developers.eveonline.com/static-data/tranquility/latest.jsonl');
-        // fallback to const version
-        if(!$result->successful()){
-            $this->command->info('Unable to get latest version, using version: '. $this->version);
-            return;
-        }
-        $firstLine = strtok($result->body(), "\n");
-        $data = json_decode($firstLine, true);
-        if(!$data['buildNumber']){
-            this->command->info('Unable to get latest build version from response. using version: '. $this->version);
-            return;
-        }
-        
-        $this->version = $data['buildNumber'];
     }
 
     private function extractZipWithProgress(string $zipPath, string $destination): void

@@ -21,5 +21,7 @@
  */
 
 return [
-    
+    'sde' => [
+        'version' => env('SDE_VERSION')
+    ]
 ];
