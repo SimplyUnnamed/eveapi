@@ -80,6 +80,7 @@ class CcpSdeSeeder extends Seeder
     public function run()
     {
         // extract sde file/seeder mapping from config
+        // $sde_seeders = config('seat.sde.seeders', []);
         // configure sde version
         $this->version = config('eveapi.config.sde.version', $this->version);
         $this->command->info('Checking configuration...');
