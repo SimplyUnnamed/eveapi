@@ -48,7 +48,7 @@ class CcpSdeSeeder extends Seeder
     /**
      * @var string
      */
-    private const VERSION = '3118350';
+    private $version = '3118350';
 
     /**
      * The SDE file storage path.
@@ -81,13 +81,13 @@ class CcpSdeSeeder extends Seeder
     {
         // extract sde file/seeder mapping from config
         // $sde_seeders = config('seat.sde.seeders', []);
-
+        // configure sde version
+        $this->version = config('eveapi.config.sde.version', $this->version);
         $this->command->info('Checking configuration...');
         if (! $this->isStorageOk())
             throw new DirectoryNotFoundException('Storage path is not OK. Please check permissions.');
 
-        $this->command->info('Authorised Version Found as: ' . self::VERSION);
-
+        $this->command->info('Using SDE Version: ' . $this->version);
 
         $this->command->info('Downloading static files...');
         $this->downloadStaticFiles();
@@ -96,14 +96,14 @@ class CcpSdeSeeder extends Seeder
         $this->call($this->seeders);
     }
 
+    
     /**
      * Download the EVE Sde from Fuzzwork and save it
      * in the storage_path/sde folder.
      */
     private function downloadStaticFiles()
     {
-
-        $sde = sprintf('eve-online-static-data-%d-jsonl.zip', self::VERSION);
+        $sde = sprintf('eve-online-static-data-%d-jsonl.zip', $this->version);
 
         $url = sprintf('https://developers.eveonline.com/static-data/tranquility/%s', $sde);
         $destination = $this->storage_path . $sde;
