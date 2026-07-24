@@ -48,7 +48,7 @@ class CcpSdeSeeder extends Seeder
     /**
      * @var string
      */
-    private $version = '3118350';
+    private $version = '3444265';
 
     /**
      * The SDE file storage path.

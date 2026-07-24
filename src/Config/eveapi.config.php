@@ -22,6 +22,6 @@
 
 return [
     'sde' => [
-        'version' => env('SDE_VERSION')
-    ]
+        'version' => env('CCP_SDE_VERSION'),
+    ],
 ];
