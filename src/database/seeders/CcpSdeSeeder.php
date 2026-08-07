@@ -48,7 +48,7 @@ class CcpSdeSeeder extends Seeder
     /**
      * @var string
      */
-    private $version = '3118350';
+    private $version = '3444265';
 
     /**
      * The SDE file storage path.
@@ -82,7 +82,7 @@ class CcpSdeSeeder extends Seeder
         // extract sde file/seeder mapping from config
         // $sde_seeders = config('seat.sde.seeders', []);
         // configure sde version
-        $this->version = config('eveapi.config.sde.version') ?? $this->version;
+        $this->version = config('eveapi.config.sde.version', $this->version);
         $this->command->info('Checking configuration...');
         if (! $this->isStorageOk())
             throw new DirectoryNotFoundException('Storage path is not OK. Please check permissions.');
